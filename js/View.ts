@@ -1,6 +1,10 @@
 import p5 from "p5";
+import Align from "./Align";
 
 interface View {
+
+  align?: Align
+
   parent?: View;
 
   getX(): number;

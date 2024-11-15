@@ -1,8 +1,14 @@
 import p5 from 'p5';
 import View from "./View";
+import Align from "./Align"
 
+class Vertical implements View {
 
-class Group implements View {
+  align?: Align
+  public x: number;
+  public y: number;
+  public alignContent: Align = Align.LEFT
+  private children: View[] = [];
 
   setX(x: number) {
     this.x = x;
@@ -30,17 +36,10 @@ class Group implements View {
     return w;
   }
 
-  public x: number;
-  public y: number;
-  private children: View[] = [];
-
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
 
   public addChild(child: View) {
     this.children.push(child);
+    child.parent = this;
   }
 
   public getX(): number {
@@ -65,8 +64,16 @@ class Group implements View {
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
       const y = this.y + i * child.getHeight(p);
-      child.setX(this.x)
-      child.setY(y)
+      if (this.alignContent === Align.LEFT) {
+        child.setX(this.x)
+        child.setY(y)
+      } else if (this.alignContent == Align.RIGHT) {
+        const maxChildWidth = this.getWidth(p)
+        child.setX(this.x + maxChildWidth - child.getWidth(p))
+        child.setY(y)
+      } else {
+        throw new Error("Unknown alignContent: " + this.alignContent)
+      }
       child.draw(p);
     }
 
@@ -86,4 +93,4 @@ class Group implements View {
   }
 }
 
-export default Group;
+export default Vertical;

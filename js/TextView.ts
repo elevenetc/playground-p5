@@ -28,11 +28,11 @@ class TextView implements View {
   }
 
   public getX(): number {
-    return this.x + (this.parent?.getX() ?? 0);
+    return this.x;
   }
 
   public getY(): number {
-    return this.y + (this.parent?.getY() ?? 0);
+    return this.y;
   }
 
   public contains(x: number, mouseY: number, p: p5): boolean {
@@ -40,8 +40,9 @@ class TextView implements View {
     const h = this.getHeight(p);
     const thisX = this.getX()
     const thisY = this.getY()
-    return x >= thisX && x <= thisX + w &&
+    let result = x >= thisX && x <= thisX + w &&
       mouseY >= thisY && mouseY <= thisY + h;
+    return result;
   }
 
   public draw(p: p5) {
