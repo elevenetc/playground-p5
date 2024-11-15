@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+//    "baseUrl": "./",
+    "rootDir": "./",
+//    "outDir": "dist",
+//    "lib": ["ES6", "DOM"],
+//    "target": "es5",
+//    "module": "es6",
+//    "noImplicitAny": true,
+//    "removeComments": true
+  }
+}
