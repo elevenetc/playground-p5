@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "sourceMap": true,
 //    "baseUrl": "./",
     "rootDir": "./",
-//    "outDir": "dist",
+    "allowSyntheticDefaultImports": true
+    //    "outDir": "dist",
 //    "lib": ["ES6", "DOM"],
 //    "target": "es5",
 //    "module": "es6",

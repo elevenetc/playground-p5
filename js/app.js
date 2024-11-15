@@ -1,68 +1,94 @@
-// Import p5
 import p5 from 'p5';
+import TextView from './TextView.ts';
+import Tag from "./Tag";
+import Group from "./Group";
 
-const items = ["1. aaa", "2. bbb", "3. ccc"];
-const startX = 50;
-const startY = 50;
-const textItemVerticalGap = 50;
-const bgAlphas = [];
-const hoverState = [];
+const startX = 0;
+const startY = 0;
+
+const projectsGroup = new Group(startX, startY)
+projectsGroup.addChild(new TextView("03.2021 Mobile sync node js tool"));
+projectsGroup.addChild(new TextView("01.2021 Yo momma KMP app"));
+projectsGroup.addChild(new TextView("04.2020 Objective-C diff tool"));
+
+// const projects = [
+//   new TextView("03.2021 Mobile sync node js tool"),
+//   new TextView("01.2021 Yo momma KMP app"),
+//   new TextView("04.2020 Objective-C diff tool"),
+// ];
+
+const tags = [
+  new Tag("js"),
+  new Tag("kotlin"),
+  new Tag("kmp")
+]
+
+
+const textItemVerticalGap = 30;
 const maxAlpha = 200;
 const alphaStep = 25;
 
+
+
 function setup(p) {
-  p.createCanvas(400, 200);
+  p.createCanvas(p.windowWidth, p.windowHeight);
   p.textSize(32);
-  for (let i = 0; i < items.length; i++) {
-    bgAlphas[i] = 0;
-    hoverState[i] = false;
-  }
 }
 
 function draw(p) {
-  p.background(255);
+  p.background(0);
 
-  for (let i = 0; i < items.length; i++) {
+  projectsGroup.draw(p)
+
+  //for (let i = 0; i < projects.length; i++) {
+  for (let i = 0; i < 10; i++) {
     const y = startY + i * textItemVerticalGap;
-    const textStr = items[i];
-    const textWidthVal = p.textWidth(textStr);
-    const textHeight = p.textAscent() + p.textDescent();
+    //const button = projects[i];
+    //const textStr = button.title;
+    //const textWidth = p.textWidth(textStr);
+    //const textHeight = p.textAscent() + p.textDescent();
+
+    const textWidth = 0
+    const textHeight = 0
 
     if (
       p.mouseX >= startX &&
-      p.mouseX <= startX + textWidthVal &&
+      p.mouseX <= startX + textWidth &&
       p.mouseY >= y - textHeight &&
       p.mouseY <= y
     ) {
-      bgAlphas[i] = p.min(bgAlphas[i] + alphaStep, maxAlpha);
-      hoverState[i] = true;
+      //button.onHoverIn(p);
+      // button.hover = true;
+      // button.bgAlpha = p.min(button.bgAlpha + alphaStep, maxAlpha);
     } else {
-      bgAlphas[i] = p.max(bgAlphas[i] - alphaStep, 0);
-      hoverState[i] = false;
+      //button.onHoverOut(p);
+      // button.hover = false;
+      // button.bgAlpha = p.max(button.bgAlpha - alphaStep, 0);
     }
 
-    if (bgAlphas[i] > 0) {
-      p.noStroke()
-      p.fill(200, bgAlphas[i]);
-      p.rect(startX, y - textHeight, textWidthVal, textHeight);
-    }
+    //button.draw(startX, y, p);
 
-    p.fill(0);
-    p.text(textStr, startX, y);
+    // if (button.bgAlpha > 0) {
+    //   p.noStroke()
+    //   p.fill(200, button.bgAlpha);
+    //   p.rect(startX, y - textHeight, textWidth, textHeight);
+    // }
+    //
+    // p.fill(255);
+    // p.text(textStr, startX, y);
   }
 
+  //const hasHoveredButton = projects.some(button => button.hover === true);
 
-  if (hoverState.includes(true)) {
-    p.cursor('pointer'); // Change cursor to pointer when over text
-  } else {
-    p.cursor('default'); // Default cursor when not over text
-  }
+  //if (hasHoveredButton) p.cursor('pointer'); else p.cursor('default');
 }
+
 
 
 const sketch = (p) => {
   p.setup = () => setup(p);
   p.draw = () => draw(p);
+  p.windowResized = () => p.resizeCanvas(p.windowWidth, p.windowHeight);
 };
 
 new p5(sketch);
