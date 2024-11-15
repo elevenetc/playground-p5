@@ -1,6 +1,5 @@
-import p5, { Color } from 'p5';
+import p5 from 'p5';
 import View from "./View";
-
 
 
 class Group implements View {
@@ -15,15 +14,16 @@ class Group implements View {
 
   getHeight(p: p5): number {
     let h = 0;
-    for (let i = 0; i < this.children.length; i++){
+    for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
       h += child.getHeight(p)
     }
     return h;
   }
+
   getWidth(p: p5): number {
     let w = 0;
-    for (let i = 0; i < this.children.length; i++){
+    for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
       w = Math.max(child.getWidth(p), w)
     }
@@ -51,12 +51,18 @@ class Group implements View {
     return this.y;
   }
 
-  public contains(x: number, y: number): boolean {
+  public contains(x: number, y: number, p: p5): boolean {
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i];
+      if (child.contains(x, y, p)) {
+        return true
+      }
+    }
     return false;
   }
 
   public draw(p: p5) {
-    for (let i = 0; i < this.children.length; i++){
+    for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
       const y = this.y + i * child.getHeight(p);
       child.setX(this.x)
