@@ -8,7 +8,7 @@ class Vertical implements View {
   public x: number;
   public y: number;
   public alignContent: Align = Align.LEFT
-  private children: View[] = [];
+  children: View[] = [];
 
   setX(x: number) {
     this.x = x;

@@ -6,6 +6,7 @@ const maxAlpha = 200;
 
 class TextView implements View {
 
+  id?: string;
   public x: number;
   public y: number;
   public parent: View;
@@ -15,8 +16,15 @@ class TextView implements View {
   public hover: boolean = false;
   public bgAlpha: number = 0;
 
-  constructor(title: string) {
-    this.title = title;
+  constructor(title: string)
+  constructor(title: string, id: string)
+  constructor(...args: any[]) {
+    if (args.length === 1) {
+      this.title = args[0];
+    } else {
+      this.title = args[0];
+      this.id = args[1];
+    }
   }
 
   setX(x: number) {

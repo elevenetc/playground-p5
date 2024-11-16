@@ -3,6 +3,8 @@ import Align from "./Align";
 
 interface View {
 
+  id?: string;
+
   align?: Align
 
   parent?: View;

@@ -1,31 +1,86 @@
 import p5 from 'p5';
 import TextView from './TextView.ts';
-import Tag from "./Tag";
+import {allProjects, allTags} from "./projectsData";
 import Vertical from "./Vertical";
 import Align from "./Align";
 import Free from "./Free";
+import {formatDateToMMYYYY} from "./dateUtils";
+import Project from "./Project";
+import {viewById} from "./filterUtils";
+import LinksView from "./LinksView";
 
-const startX = 0;
-const startY = 0;
+const projectsToTags = new Map();
+const tagsToProjects = new Map();
 
 const root = new Free()
 
-const projectsGroup = new Vertical()
-projectsGroup.align = Align.LEFT_TOP;
-projectsGroup.alignContent = Align.LEFT;
-projectsGroup.addChild(new TextView("03.2021 Mobile sync node js tool"));
-projectsGroup.addChild(new TextView("01.2021 Yo momma KMP app"));
-projectsGroup.addChild(new TextView("04.2020 Objective-C diff tool"));
+const linksView = new LinksView()
 
-const tagsGroup = new Vertical()
-tagsGroup.align = Align.RIGHT_TOP;
-tagsGroup.alignContent = Align.RIGHT;
-tagsGroup.addChild(new TextView("kotlin"));
-tagsGroup.addChild(new TextView("kmp"));
-tagsGroup.addChild(new TextView("art"));
+const projectsView = new Vertical()
+projectsView.align = Align.LEFT_TOP;
+projectsView.alignContent = Align.LEFT;
+const tagsView = new Vertical()
+tagsView.align = Align.RIGHT_TOP;
+tagsView.alignContent = Align.RIGHT;
 
-root.addChild(projectsGroup)
-root.addChild(tagsGroup)
+allProjects.sort((a, b) => b.date.getTime() - a.date.getTime()).forEach(project => {
+  const title = formatDateToMMYYYY(project.date) + " " + project.title
+  const projectView = new TextView(title, project.id);
+  projectsToTags.set(projectView, [])
+  projectsView.addChild(projectView);
+})
+
+allTags.sort((a, b) => a.title.localeCompare(b.title)).forEach(tag => {
+  let tagView = new TextView(tag.title, tag.id);
+  tagsView.addChild(tagView);
+  tagsToProjects.set(tagView, [])
+})
+
+tagsView.children.forEach(tagView => {
+  const tagId = tagView.id
+
+  projectsView.children.forEach(projectView => {
+
+    const projectId = projectView.id
+    const project = allProjects.filter(project => project.id === projectId)[0]
+
+    project.tags.forEach(tag => {
+      if (tag.id === tagId) {
+        projectsToTags.get(projectView).push(tagView)
+      }
+    })
+  })
+})
+
+projectsView.children.forEach(projectView => {
+  const projectId = projectView.id
+
+  tagsView.children.forEach(tagView => {
+
+    const tagId = tagView.id
+    //const tag = allTags.filter(tag => tag.id === tagId)[0]
+    const project = allProjects.filter(project => project.id === projectId)[0]
+
+    project.tags.forEach(tag => {
+      if(tag.id === tagId) {
+        tagsToProjects.get(tagView).push(projectView)
+      }
+    })
+  })
+})
+
+linksView.setMaps(tagsToProjects, projectsToTags)
+
+projectsToTags.forEach((views, projectView) => {
+  console.log("> " + projectView.id)
+  views.forEach(view => {
+    console.log(">> " + view.id)
+  })
+})
+
+root.addChild(linksView)
+root.addChild(projectsView)
+root.addChild(tagsView)
 
 function setup(p) {
   p.createCanvas(p.windowWidth, p.windowHeight);
