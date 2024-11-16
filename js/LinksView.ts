@@ -3,6 +3,7 @@ import TextView from "./TextView";
 import View from "./View";
 import Align from "./Align";
 import AnimationValue from "./AnimationValue";
+import {lightenColor, stringToRGB} from "./colorUtils";
 
 class LinksView extends View {
 
@@ -64,30 +65,6 @@ class LinksView extends View {
     })
 
     this.highlightRoot(id, hovered, this.projectsToTags, this.tagsToProjects)
-
-
-    // const tagToShow = []
-    //
-    // this.projectsToTags.forEach((tags, projectView) => {
-    //   if (projectView.id === this.hoveredProject) {
-    //     projectView.setAlpha(255, 30, true)
-    //
-    //     tags.forEach(tagView => {
-    //       tagToShow.push(tagView.id)
-    //     })
-    //
-    //   } else {
-    //     projectView.setAlpha(50, 1, true)
-    //   }
-    // })
-    //
-    // this.tagsToProjects.forEach((projectsViews, tagView) => {
-    //   if (tagToShow.indexOf(tagView.id) !== -1) {
-    //     tagView.setAlpha(255, 30, true)
-    //   } else {
-    //     tagView.setAlpha(50, 5, true)
-    //   }
-    // })
   }
 
   onTagHover(id: string, hovered: boolean) {
@@ -177,10 +154,12 @@ class Link {
   tagView: TextView
 
   alpha: AnimationValue = new AnimationValue(50, 1, 0, 255)
+  color:[number, number, number]
 
   constructor(projectView: TextView, tagView: TextView) {
     this.projectView = projectView
     this.tagView = tagView
+    this.color = lightenColor(stringToRGB(tagView.title))
   }
 
   setSelected(selected: boolean) {
@@ -198,7 +177,8 @@ class Link {
     let tagX = this.tagView.getX();
     let tagY = this.tagView.getY() + this.tagView.getHeight(p);
 
-    p.stroke(255, 0, 0, this.alpha.calculate());
+    //p.stroke(255, 0, 0, this.alpha.calculate());
+    p.stroke(this.color[0], this.color[1], this.color[2], this.alpha.calculate());
     p.noFill();
 
     p.bezier(
