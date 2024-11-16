@@ -5,7 +5,6 @@ import {handleChildrenHover} from "./viewUtils";
 
 class Vertical extends View {
 
-  align?: Align
   public alignContent: Align = Align.LEFT
   children: View[] = [];
 

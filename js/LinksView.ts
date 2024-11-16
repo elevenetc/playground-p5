@@ -2,6 +2,7 @@ import p5 from "p5";
 import TextView from "./TextView";
 import View from "./View";
 import Align from "./Align";
+import AnimationValue from "./AnimationValue";
 
 class LinksView extends View {
 
@@ -14,12 +15,114 @@ class LinksView extends View {
 
   links: Link[] = []
 
-  setX(x: number): void {
+  hoveredProject: string = "";
+  hoveredTag: string = "";
 
+  highlightRoot(
+    rootId: string,
+    hovered: boolean,
+    roots: Map<TextView, TextView[]>,
+    leaves: Map<TextView, TextView[]>,
+  ) {
+    const leavesToShow = []
+
+    roots.forEach((leaves, root) => {
+      if (root.id === rootId && hovered) {
+        console.log("hightlight root", root.id)
+        root.setAlpha(255, 30, true)
+
+        leaves.forEach(tagView => {
+          leavesToShow.push(tagView.id)
+        })
+
+      } else {
+        console.log("dim root", root.id)
+        root.setAlpha(50, 1, true)
+      }
+    })
+
+    leaves.forEach((roots, leaf) => {
+      if (leavesToShow.indexOf(leaf.id) !== -1) {
+        leaf.setAlpha(255, 30, true)
+      } else {
+        leaf.setAlpha(50, 5, true)
+      }
+    })
   }
 
-  setY(y: number): void {
+  onProjectHover(id: string, hovered: boolean) {
+    if(!hovered) return
+    if (hovered) {
+      if(this.hoveredProject == id) return
+      this.hoveredProject = id;
+    }
 
+    console.log("onProjectHover: " + id)
+
+    this.links.forEach(link => {
+      link.setSelected(link.projectView.id === this.hoveredProject)
+    })
+
+    this.highlightRoot(id, hovered, this.projectsToTags, this.tagsToProjects)
+
+
+    // const tagToShow = []
+    //
+    // this.projectsToTags.forEach((tags, projectView) => {
+    //   if (projectView.id === this.hoveredProject) {
+    //     projectView.setAlpha(255, 30, true)
+    //
+    //     tags.forEach(tagView => {
+    //       tagToShow.push(tagView.id)
+    //     })
+    //
+    //   } else {
+    //     projectView.setAlpha(50, 1, true)
+    //   }
+    // })
+    //
+    // this.tagsToProjects.forEach((projectsViews, tagView) => {
+    //   if (tagToShow.indexOf(tagView.id) !== -1) {
+    //     tagView.setAlpha(255, 30, true)
+    //   } else {
+    //     tagView.setAlpha(50, 5, true)
+    //   }
+    // })
+  }
+
+  onTagHover(id: string, hovered: boolean) {
+    if(!hovered) return
+    if (hovered) {
+      if(this.hoveredTag == id) return
+      this.hoveredTag = id;
+    }
+
+    this.links.forEach(link => {
+      link.setSelected(link.tagView.id === this.hoveredTag)
+    })
+
+    this.highlightRoot(id, hovered, this.tagsToProjects, this.projectsToTags)
+  }
+
+  onNoHover() {
+
+    if(this.hoveredProject == "" && this.hoveredTag == "") return
+
+    console.log("no hover")
+    this.hoveredProject = ""
+    this.hoveredTag = ""
+
+    this.tagsToProjects.forEach((projectsViews, tagView) => {
+      tagView.setAlpha(255, 5, true)
+    })
+
+    this.projectsToTags.forEach((tagsViews, projectView) => {
+      projectView.setAlpha(255, 5, true)
+    })
+
+    this.links.forEach(link => {
+      link.setSelected(false)
+    });
   }
 
   getWidth(p: p5): number {
@@ -58,8 +161,7 @@ class LinksView extends View {
 
   render(p: p5): void {
     p.push();
-    p.stroke(255, 0, 0, 50);
-    p.noFill();
+
 
     this.links.forEach(link => {
       link.render(p)
@@ -70,19 +172,35 @@ class LinksView extends View {
 }
 
 class Link {
+
   projectView: TextView
   tagView: TextView
+
+  alpha: AnimationValue = new AnimationValue(50, 1, 0, 255)
 
   constructor(projectView: TextView, tagView: TextView) {
     this.projectView = projectView
     this.tagView = tagView
   }
 
+  setSelected(selected: boolean) {
+    if (selected) {
+      this.alpha.setTarget(255, 50);
+    } else {
+      this.alpha.setTarget(50, 5);
+    }
+  }
+
   render(p: p5) {
+
     let projectX = this.projectView.getX() + this.projectView.getWidth(p);
     let projectY = this.projectView.getY() + this.projectView.getHeight(p);
     let tagX = this.tagView.getX();
     let tagY = this.tagView.getY() + this.tagView.getHeight(p);
+
+    p.stroke(255, 0, 0, this.alpha.calculate());
+    p.noFill();
+
     p.bezier(
       projectX,
       projectY,

@@ -1,6 +1,6 @@
 import Align from "./Align";
 import p5 from "p5";
-import {notImplementedError} from "./errorUtils";
+import AnimationValue from "./AnimationValue";
 
 class View {
 
@@ -10,10 +10,22 @@ class View {
 
   parent?: View;
 
+  alpha: AnimationValue = new AnimationValue(255, 30, 0, 255);
+
+  hover: boolean = false;
+
   x: number;
   y: number;
 
   hoverHandler: (id: string, hovered: boolean) => void;
+
+  setAlpha(value: number, step: number = this.alpha.step, animate: boolean = false) {
+    if(animate){
+      this.alpha.setTarget(value)
+    }else{
+      this.alpha.setCurrent(value)
+    }
+  }
 
   getX(): number {
     return this.x;
@@ -44,11 +56,11 @@ class View {
   }
 
   onHoverIn(p: p5): void {
-    this.hoverHandler?.call(this.id, true)
+    this.hoverHandler?.(this.id, true)
   }
 
   onHoverOut(p: p5): void {
-    this.hoverHandler?.call(this.id, false)
+    this.hoverHandler?.(this.id, false)
   }
 
   contains(x: number, mouseY: number, p: p5): boolean {
@@ -58,10 +70,18 @@ class View {
   handleHover(mouseX: number, mouseY: number, p: p5): boolean {
     let result = false;
     if (this.contains(mouseX, mouseY, p)) {
-      this.onHoverIn(p);
+
+      if (!this.hover) {
+        this.hover = true;
+        this.onHoverIn(p);
+      }
+
       result = true;
     } else {
-      this.onHoverOut(p);
+      if (this.hover) {
+        this.hover = false;
+        this.onHoverOut(p);
+      }
     }
     return result;
   }

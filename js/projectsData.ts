@@ -9,11 +9,12 @@ const allTags = [
   new Tag("node"),
   new Tag("obj-c"),
   new Tag("ios"),
-  new Tag("android"),
-  new Tag("java"),
   new Tag("ij"),
   new Tag("swift"),
   new Tag("graphite"),
+
+  new Tag("android"),
+  new Tag("java"),
 ]
 
 function tags(titles: String[]): Tag[] {
@@ -39,7 +40,7 @@ const allProjects: Project[] = [
   new Project("Interactive canvas", new Date(2016, 1), tags(["android", "java"])),
   new Project("Raytracer", new Date(2016, 4), tags(["android", "java"])),
   new Project("TextSurface", new Date(2016, 6), tags(["android", "kotlin"])),
-  new Project("Mobile device manager", new Date(2020, 20), tags(["js", "node"])),
+  new Project("Mobile device manager", new Date(2020, 20), tags(["js", "node", "android", "ios"])),
   new Project("Pinocchio", new Date(2023, 8), tags(["art", "graphite"])),
   new Project("Yo momma KMP app", new Date(2024, 6), tags(["kmp", "kotlin", "ios", "android"])),
   new Project("Hello IDE", new Date(2024, 6), tags(["kotlin", "ij", "swift"])),
