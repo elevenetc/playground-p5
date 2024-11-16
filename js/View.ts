@@ -1,7 +1,8 @@
-import p5 from "p5";
 import Align from "./Align";
+import p5 from "p5";
+import {notImplementedError} from "./errorUtils";
 
-interface View {
+class View {
 
   id?: string;
 
@@ -9,25 +10,61 @@ interface View {
 
   parent?: View;
 
-  getX(): number;
+  x: number;
+  y: number;
 
-  getY(): number;
+  hoverHandler: (id: string, hovered: boolean) => void;
 
-  setX(x: number): void;
+  getX(): number {
+    return this.x;
+  }
 
-  setY(y: number): void;
+  getY(): number {
+    return this.y;
+  }
 
-  getWidth(p: p5): number;
+  setX(x: number) {
+    this.x = x;
+  }
 
-  getHeight(p: p5): number;
+  setY(y: number) {
+    this.y = y;
+  }
 
-  draw(p: p5): void;
+  getWidth(p: p5): number {
+    throw new Error("getWidth not implemented.");
+  }
 
-  onHoverIn(p: p5): void;
+  getHeight(p: p5): number {
+    throw new Error("getHeight not implemented.");
+  }
 
-  onHoverOut(p: p5): void;
+  render(p: p5): void {
+    throw new Error("draw not implemented.");
+  }
 
-  contains(x: number, mouseY: number, p: p5): boolean;
+  onHoverIn(p: p5): void {
+    this.hoverHandler?.call(this.id, true)
+  }
+
+  onHoverOut(p: p5): void {
+    this.hoverHandler?.call(this.id, false)
+  }
+
+  contains(x: number, mouseY: number, p: p5): boolean {
+    throw new Error(`${this.constructor.name}.contains not implemented.`);
+  }
+
+  handleHover(mouseX: number, mouseY: number, p: p5): boolean {
+    let result = false;
+    if (this.contains(mouseX, mouseY, p)) {
+      this.onHoverIn(p);
+      result = true;
+    } else {
+      this.onHoverOut(p);
+    }
+    return result;
+  }
 }
 
 export default View;

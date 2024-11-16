@@ -1,22 +1,13 @@
 import p5 from 'p5';
 import View from "./View";
 import Align from "./Align"
+import {handleChildrenHover} from "./viewUtils";
 
-class Vertical implements View {
+class Vertical extends View {
 
   align?: Align
-  public x: number;
-  public y: number;
   public alignContent: Align = Align.LEFT
   children: View[] = [];
-
-  setX(x: number) {
-    this.x = x;
-  }
-
-  setY(y: number) {
-    this.y = y;
-  }
 
   getHeight(p: p5): number {
     let h = 0;
@@ -36,18 +27,9 @@ class Vertical implements View {
     return w;
   }
 
-
   public addChild(child: View) {
     this.children.push(child);
     child.parent = this;
-  }
-
-  public getX(): number {
-    return this.x;
-  }
-
-  public getY(): number {
-    return this.y;
   }
 
   public contains(x: number, y: number, p: p5): boolean {
@@ -60,7 +42,7 @@ class Vertical implements View {
     return false;
   }
 
-  public draw(p: p5) {
+  public render(p: p5) {
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
       const y = this.y + i * child.getHeight(p);
@@ -74,14 +56,20 @@ class Vertical implements View {
       } else {
         throw new Error("Unknown alignContent: " + this.alignContent)
       }
-      child.draw(p);
+      child.render(p);
     }
 
-    let c: p5.Color;
-    c = p.color(0, 204, 0, 30)
 
-    p.fill(c);
-    p.rect(this.x, this.y, this.getWidth(p), this.getHeight(p));
+
+    //debug
+    //let c: p5.Color;
+    //c = p.color(0, 204, 0, 30)
+    //p.fill(c);
+    //p.rect(this.x, this.y, this.getWidth(p), this.getHeight(p));
+  }
+
+  handleHover(mouseX: number, mouseY: number, p: p5): boolean {
+    return handleChildrenHover(this.children, mouseX, mouseY, p)
   }
 
   public onHoverIn(p: p5) {

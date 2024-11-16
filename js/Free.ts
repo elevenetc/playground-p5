@@ -1,7 +1,9 @@
 import View from "./View";
 import Align from "./Align";
+import p5 from "p5";
+import {handleChildrenHover} from "./viewUtils";
 
-class Free implements View {
+class Free extends View {
   parent?: View;
   private children: View[] = [];
 
@@ -34,7 +36,7 @@ class Free implements View {
     return p.windowHeight
   }
 
-  draw(p: import("p5")): void {
+  render(p: import("p5")): void {
 
 
     for (let i = 0; i < this.children.length; i++) {
@@ -50,8 +52,12 @@ class Free implements View {
         throw new Error("Unknown align at Free: " + align)
       }
 
-      child.draw(p)
+      child.render(p)
     }
+  }
+
+  handleHover(mouseX: number, mouseY: number, p: p5): boolean {
+    return handleChildrenHover(this.children, mouseX, mouseY, p)
   }
 
   contains(x: number, y: number, p: import("p5")): boolean {

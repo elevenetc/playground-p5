@@ -5,8 +5,6 @@ import Vertical from "./Vertical";
 import Align from "./Align";
 import Free from "./Free";
 import {formatDateToMMYYYY} from "./dateUtils";
-import Project from "./Project";
-import {viewById} from "./filterUtils";
 import LinksView from "./LinksView";
 
 const projectsToTags = new Map();
@@ -25,7 +23,9 @@ tagsView.alignContent = Align.RIGHT;
 
 allProjects.sort((a, b) => b.date.getTime() - a.date.getTime()).forEach(project => {
   const title = formatDateToMMYYYY(project.date) + " " + project.title
-  const projectView = new TextView(title, project.id);
+  const projectView = new TextView(title, project.id, (id, hovered) => {
+
+  });
   projectsToTags.set(projectView, [])
   projectsView.addChild(projectView);
 })
@@ -62,7 +62,7 @@ projectsView.children.forEach(projectView => {
     const project = allProjects.filter(project => project.id === projectId)[0]
 
     project.tags.forEach(tag => {
-      if(tag.id === tagId) {
+      if (tag.id === tagId) {
         tagsToProjects.get(tagView).push(projectView)
       }
     })
@@ -70,13 +70,6 @@ projectsView.children.forEach(projectView => {
 })
 
 linksView.setMaps(tagsToProjects, projectsToTags)
-
-projectsToTags.forEach((views, projectView) => {
-  console.log("> " + projectView.id)
-  views.forEach(view => {
-    console.log(">> " + view.id)
-  })
-})
 
 root.addChild(linksView)
 root.addChild(projectsView)
@@ -90,13 +83,10 @@ function setup(p) {
 function draw(p) {
   p.background(0);
 
-  root.draw(p)
+  root.render(p)
 
-  if (root.contains(p.mouseX, p.mouseY, p)) {
-    p.cursor('pointer');
-  } else {
-    p.cursor('default');
-  }
+  if (root.handleHover(p.mouseX, p.mouseY, p)) p.cursor('pointer');
+  else p.cursor('default');
 }
 
 

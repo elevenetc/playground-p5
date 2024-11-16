@@ -4,12 +4,7 @@ import p5 from "p5";
 const alphaStep = 25;
 const maxAlpha = 200;
 
-class TextView implements View {
-
-  id?: string;
-  public x: number;
-  public y: number;
-  public parent: View;
+class TextView extends View {
 
   public title: string;
 
@@ -18,29 +13,19 @@ class TextView implements View {
 
   constructor(title: string)
   constructor(title: string, id: string)
+  constructor(title: string, id: string, hoverHandler: (id: string, hovered: boolean) => void)
   constructor(...args: any[]) {
+    super()
     if (args.length === 1) {
       this.title = args[0];
+    } else if (args.length === 2) {
+      this.title = args[0];
+      this.id = args[1];
     } else {
       this.title = args[0];
       this.id = args[1];
+      this.hoverHandler = args[2];
     }
-  }
-
-  setX(x: number) {
-    this.x = x;
-  }
-
-  setY(y: number) {
-    this.y = y;
-  }
-
-  public getX(): number {
-    return this.x;
-  }
-
-  public getY(): number {
-    return this.y;
   }
 
   public contains(x: number, mouseY: number, p: p5): boolean {
@@ -53,18 +38,25 @@ class TextView implements View {
     return result;
   }
 
-  public draw(p: p5) {
+  public render(p: p5) {
 
-    if (this.contains(p.mouseX, p.mouseY, p)) {
-      this.onHoverIn(p);
-    } else {
-      this.onHoverOut(p);
-    }
+    // if (this.contains(p.mouseX, p.mouseY, p)) {
+    //   this.onHoverIn(p);
+    // } else {
+    //   this.onHoverOut(p);
+    // }
 
     if (this.bgAlpha > 0) {
       p.noStroke()
+
       p.fill(200, this.bgAlpha)
       p.rect(this.x, this.y, this.getWidth(p), this.getHeight(p))
+    }
+
+    if(this.hover) {
+      this.bgAlpha = p.min(this.bgAlpha + alphaStep, maxAlpha);
+    }else{
+      this.bgAlpha = p.max(this.bgAlpha - alphaStep, 0);
     }
 
     p.fill(255);
@@ -80,13 +72,16 @@ class TextView implements View {
   }
 
   public onHoverIn(p: p5) {
+    super.onHoverIn(p);
     this.hover = true;
-    this.bgAlpha = p.min(this.bgAlpha + alphaStep, maxAlpha);
+
   }
 
   public onHoverOut(p: p5) {
+    super.onHoverOut(p);
     this.hover = false;
-    this.bgAlpha = p.max(this.bgAlpha - alphaStep, 0);
+
+
   }
 }
 
