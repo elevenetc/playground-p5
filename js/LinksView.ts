@@ -31,7 +31,7 @@ class LinksView extends View {
 
     roots.forEach((leaves, root) => {
       if (root.id === rootId && hovered) {
-        root.setAlpha(255, 30, true)
+        root.setAlpha(255, 1, true)
 
         leaves.forEach(tagView => {
           leavesToShow.push(tagView.id)
@@ -44,9 +44,9 @@ class LinksView extends View {
 
     leaves.forEach((roots, leaf) => {
       if (leavesToShow.indexOf(leaf.id) !== -1) {
-        leaf.setAlpha(255, 30, true)
+        leaf.setAlpha(255, 1, true)
       } else {
-        leaf.setAlpha(50, 5, true)
+        leaf.setAlpha(50, 1, true)
       }
     })
   }
@@ -150,7 +150,7 @@ class Link {
   projectView: TextView
   tagView: TextView
 
-  minAlpha = 20
+  minAlpha = 10
 
   maxBouns = 0.5
 
@@ -171,7 +171,7 @@ class Link {
   setSelected(selected: boolean, p: p5) {
     if (selected) {
       this.selected = true
-      this.alpha.setTarget(255, 50);
+      this.alpha.setTarget(100, 5);
       this.bouns.setTarget(this.maxBouns);
 
     } else {
@@ -180,7 +180,7 @@ class Link {
     }
   }
 
-  lines = 10
+  lines = 20
 
   render(p: p5) {
 
@@ -213,9 +213,9 @@ class Link {
       p.bezier(
         projectEndX,
         projectY,
-        projectEndX + bounsValue + 150 + i * 10,
+        projectEndX + bounsValue + 150 + i * 6,
         projectY + bounsValue,
-        tagStartX + bounsValue - 150 - i * 10,
+        tagStartX + bounsValue - 150 - i * 6,
         tagY + bounsValue,
         tagStartX,
         tagY
