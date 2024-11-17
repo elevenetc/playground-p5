@@ -23,16 +23,16 @@ tagsView.alignContent = Align.RIGHT;
 
 allProjects.sort((a, b) => b.date.getTime() - a.date.getTime()).forEach(project => {
   const title = formatDateToMMYYYY(project.date) + " " + project.title
-  const projectView = new TextView(title, project.id, (id, hovered) => {
-    linksView.onProjectHover(id, hovered)
+  const projectView = new TextView(title, project.id, (id, hovered, p) => {
+    linksView.onProjectHover(id, hovered, p)
   });
   projectsToTags.set(projectView, [])
   projectsView.addChild(projectView);
 })
 
 allTags.sort((a, b) => a.title.localeCompare(b.title)).forEach(tag => {
-  let tagView = new TextView(tag.title, tag.id, (id, hovered) => {
-    linksView.onTagHover(id, hovered)
+  let tagView = new TextView(tag.title, tag.id, (id, hovered, p) => {
+    linksView.onTagHover(id, hovered, p)
   });
   tagsView.addChild(tagView);
   tagsToProjects.set(tagView, [])
@@ -92,7 +92,7 @@ function draw(p) {
   }
   else {
     p.cursor('default');
-    linksView.onNoHover();
+    linksView.onNoHover(p);
   }
 }
 

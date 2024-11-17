@@ -17,7 +17,7 @@ class View {
   x: number;
   y: number;
 
-  hoverHandler: (id: string, hovered: boolean) => void;
+  hoverHandler: (id: string, hovered: boolean, p: p5) => void;
 
   setAlpha(value: number, step: number = this.alpha.step, animate: boolean = false) {
     if(animate){
@@ -56,11 +56,11 @@ class View {
   }
 
   onHoverIn(p: p5): void {
-    this.hoverHandler?.(this.id, true)
+    this.hoverHandler?.(this.id, true, p)
   }
 
   onHoverOut(p: p5): void {
-    this.hoverHandler?.(this.id, false)
+    this.hoverHandler?.(this.id, false, p)
   }
 
   contains(x: number, mouseY: number, p: p5): boolean {

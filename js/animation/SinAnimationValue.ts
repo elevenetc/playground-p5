@@ -4,21 +4,25 @@ class SinAnimationValue {
   private target: number = 0;
   private cycles: number = 1;
   private active: boolean = false;
+  private fade: boolean = false;
 
-  constructor(target: number, step: number) {
-    this.target = target;
-    this.step = step;
-  }
-
-  setTarget(
+  constructor(
     target: number,
-    step: number = this.step,
-    cycles: number = 1
+    step: number,
+    cycles: number,
+    fade: boolean
   ) {
-    if(this.active) return;
     this.target = target;
     this.step = step;
     this.cycles = cycles;
+    this.fade = fade;
+  }
+
+  setTarget(
+    target: number
+  ) {
+    if (this.active) return;
+    this.target = target;
     this.angle = 0;
     this.active = true;
   }
@@ -31,17 +35,27 @@ class SinAnimationValue {
     const value = this.target * Math.sin(this.angle);
     this.angle += this.step;
 
-    // Check if the animation has completed one full spike
-    //if (this.angle >= Math.PI) {
-    if (this.angle >= Math.PI * 2) {
+    let totalAngle = Math.PI * this.cycles;
+    if (this.angle >= totalAngle) {
       this.active = false;
       this.target = 0;
-      this.angle = 0; // Reset angle for potential future animations
+      this.angle = 0;
     }
 
-    // Ensure that we return zero if the sine value is negative
-    //return value > 0 ? value : 0;
-    return value;
+    if (this.fade) {
+      const fade = this.fadeValue(this.angle, totalAngle)
+
+      return value * fade;
+    } else {
+      return value;
+    }
+  }
+
+  /**
+   * Returns value from 1 to 0
+   */
+  private fadeValue(current: number, target: number): number {
+    return 1 - current / target;
   }
 }
 

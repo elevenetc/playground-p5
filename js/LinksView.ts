@@ -5,8 +5,7 @@ import Align from "./Align";
 import LinearAnimationValue from "./animation/LinearAnimationValue";
 import {lightenColor, stringToRGB} from "./colorUtils";
 import SinAnimationValue from "./animation/SinAnimationValue";
-import {randomNegative} from "./math/mathUtils";
-import {MouseSpeed} from "./utils/MouseSpeed";
+import {MouseDirection, MouseSpeed} from "./utils/MouseSpeed";
 
 class LinksView extends View {
 
@@ -52,7 +51,7 @@ class LinksView extends View {
     })
   }
 
-  onProjectHover(id: string, hovered: boolean) {
+  onProjectHover(id: string, hovered: boolean, p:p5) {
     if (!hovered) return
     if (hovered) {
       if (this.hoveredProject == id) return
@@ -60,13 +59,13 @@ class LinksView extends View {
     }
 
     this.links.forEach(link => {
-      link.setSelected(link.projectView.id === this.hoveredProject)
+      link.setSelected(link.projectView.id === this.hoveredProject, p)
     })
 
     this.highlightRoot(id, hovered, this.projectsToTags, this.tagsToProjects)
   }
 
-  onTagHover(id: string, hovered: boolean) {
+  onTagHover(id: string, hovered: boolean, p: p5) {
     if (!hovered) return
     if (hovered) {
       if (this.hoveredTag == id) return
@@ -74,13 +73,13 @@ class LinksView extends View {
     }
 
     this.links.forEach(link => {
-      link.setSelected(link.tagView.id === this.hoveredTag)
+      link.setSelected(link.tagView.id === this.hoveredTag, p)
     })
 
     this.highlightRoot(id, hovered, this.tagsToProjects, this.projectsToTags)
   }
 
-  onNoHover() {
+  onNoHover(p: p5) {
 
     if (this.hoveredProject == "" && this.hoveredTag == "") return
 
@@ -96,7 +95,7 @@ class LinksView extends View {
     })
 
     this.links.forEach(link => {
-      link.setSelected(false)
+      link.setSelected(false, p)
     });
   }
 
@@ -153,12 +152,12 @@ class Link {
 
   minAlpha = 20
 
-  maxBouns = 25
+  maxBouns = 0.5
 
   mouseSpeed = new MouseSpeed()
 
-  alpha: LinearAnimationValue = new LinearAnimationValue(this.minAlpha, 1, 0, 255)
-  bouns: SinAnimationValue = new SinAnimationValue(this.maxBouns, 0.1)
+  alpha: LinearAnimationValue = new LinearAnimationValue(this.minAlpha, 0.5, 0, 255)
+  bouns: SinAnimationValue = new SinAnimationValue(this.maxBouns, 0.1, 5, true)
   color: [number, number, number]
 
   selected: boolean = false;
@@ -169,11 +168,17 @@ class Link {
     this.color = lightenColor(stringToRGB(tagView.title))
   }
 
-  setSelected(selected: boolean) {
+  setSelected(selected: boolean, p: p5) {
     if (selected) {
       this.selected = true
       this.alpha.setTarget(255, 50);
-      this.bouns.setTarget(this.maxBouns);
+
+
+      let mspeed = this.mouseSpeed.speed / 2500
+      let mDirection = this.mouseSpeed.direction
+
+      this.bouns.setTarget(this.maxBouns * mspeed);
+
     } else {
       this.selected = false
       this.alpha.setTarget(this.minAlpha, 5);
@@ -183,9 +188,11 @@ class Link {
 
   render(p: p5) {
 
-    let projectX = this.projectView.getX() + this.projectView.getWidth(p);
+    let projectStartX = this.projectView.getX();
+    let projectEndX = projectStartX + this.projectView.getWidth(p);
     let projectY = this.projectView.getY() + this.projectView.getHeight(p);
-    let tagX = this.tagView.getX();
+    let tagStartX = this.tagView.getX();
+    let tagEndX = this.tagView.getX() + this.tagView.getWidth(p);
     let tagY = this.tagView.getY() + this.tagView.getHeight(p);
 
     //p.stroke(255, 0, 0, this.alpha.calculate());
@@ -195,21 +202,33 @@ class Link {
     let mspeed = this.mouseSpeed.speed / 1000
     let mDirection = this.mouseSpeed.direction
 
+    let verDir = 0
+
+    if(mDirection == MouseDirection.UP) {
+      verDir = -5
+    }else{
+      verDir = 5
+    }
 
     let bounsCalc = this.bouns.calculate();
     const bv = bounsCalc
     for (let i = -5; i < 5; i++) {
       let bounsValue = bv * i;
+
+      p.line(projectStartX, projectY, projectEndX, projectY)
+
       p.bezier(
-        projectX,
+        projectEndX,
         projectY,
-        projectX + bounsValue + 50 + i * 10,
-        projectY + bounsValue,
-        tagX + bounsValue - 50 - i * 10,
-        tagY + bounsValue,
-        tagX,
+        projectEndX + bounsValue + 150 + i * 10,
+        projectY + bounsValue * verDir,
+        tagStartX + bounsValue - 150 - i * 10,
+        tagY + bounsValue * verDir,
+        tagStartX,
         tagY
       );
+
+      p.line(tagStartX, tagY, tagEndX, tagY)
     }
   }
 }

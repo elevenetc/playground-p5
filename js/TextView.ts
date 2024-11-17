@@ -11,7 +11,7 @@ class TextView extends View {
 
   constructor(title: string)
   constructor(title: string, id: string)
-  constructor(title: string, id: string, hoverHandler: (id: string, hovered: boolean) => void)
+  constructor(title: string, id: string, hoverHandler: (id: string, hovered: boolean, p: p5) => void)
   constructor(...args: any[]) {
     super()
     if (args.length === 1) {
