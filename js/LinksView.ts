@@ -2,8 +2,11 @@ import p5 from "p5";
 import TextView from "./TextView";
 import View from "./View";
 import Align from "./Align";
-import AnimationValue from "./AnimationValue";
+import LinearAnimationValue from "./animation/LinearAnimationValue";
 import {lightenColor, stringToRGB} from "./colorUtils";
+import SinAnimationValue from "./animation/SinAnimationValue";
+import {randomNegative} from "./math/mathUtils";
+import {MouseSpeed} from "./utils/MouseSpeed";
 
 class LinksView extends View {
 
@@ -29,7 +32,6 @@ class LinksView extends View {
 
     roots.forEach((leaves, root) => {
       if (root.id === rootId && hovered) {
-        console.log("hightlight root", root.id)
         root.setAlpha(255, 30, true)
 
         leaves.forEach(tagView => {
@@ -37,7 +39,6 @@ class LinksView extends View {
         })
 
       } else {
-        console.log("dim root", root.id)
         root.setAlpha(50, 1, true)
       }
     })
@@ -52,13 +53,11 @@ class LinksView extends View {
   }
 
   onProjectHover(id: string, hovered: boolean) {
-    if(!hovered) return
+    if (!hovered) return
     if (hovered) {
-      if(this.hoveredProject == id) return
+      if (this.hoveredProject == id) return
       this.hoveredProject = id;
     }
-
-    console.log("onProjectHover: " + id)
 
     this.links.forEach(link => {
       link.setSelected(link.projectView.id === this.hoveredProject)
@@ -68,9 +67,9 @@ class LinksView extends View {
   }
 
   onTagHover(id: string, hovered: boolean) {
-    if(!hovered) return
+    if (!hovered) return
     if (hovered) {
-      if(this.hoveredTag == id) return
+      if (this.hoveredTag == id) return
       this.hoveredTag = id;
     }
 
@@ -83,9 +82,8 @@ class LinksView extends View {
 
   onNoHover() {
 
-    if(this.hoveredProject == "" && this.hoveredTag == "") return
+    if (this.hoveredProject == "" && this.hoveredTag == "") return
 
-    console.log("no hover")
     this.hoveredProject = ""
     this.hoveredTag = ""
 
@@ -153,8 +151,17 @@ class Link {
   projectView: TextView
   tagView: TextView
 
-  alpha: AnimationValue = new AnimationValue(50, 1, 0, 255)
-  color:[number, number, number]
+  minAlpha = 20
+
+  maxBouns = 25
+
+  mouseSpeed = new MouseSpeed()
+
+  alpha: LinearAnimationValue = new LinearAnimationValue(this.minAlpha, 1, 0, 255)
+  bouns: SinAnimationValue = new SinAnimationValue(this.maxBouns, 0.1)
+  color: [number, number, number]
+
+  selected: boolean = false;
 
   constructor(projectView: TextView, tagView: TextView) {
     this.projectView = projectView
@@ -164,9 +171,13 @@ class Link {
 
   setSelected(selected: boolean) {
     if (selected) {
+      this.selected = true
       this.alpha.setTarget(255, 50);
+      this.bouns.setTarget(this.maxBouns);
     } else {
-      this.alpha.setTarget(50, 5);
+      this.selected = false
+      this.alpha.setTarget(this.minAlpha, 5);
+      //this.bouns.setTarget(0);
     }
   }
 
@@ -180,17 +191,26 @@ class Link {
     //p.stroke(255, 0, 0, this.alpha.calculate());
     p.stroke(this.color[0], this.color[1], this.color[2], this.alpha.calculate());
     p.noFill();
+    this.mouseSpeed.render(p)
+    let mspeed = this.mouseSpeed.speed / 1000
+    let mDirection = this.mouseSpeed.direction
 
-    p.bezier(
-      projectX,
-      projectY,
-      projectX + 100,
-      projectY - 50,
-      tagX - 100,
-      tagY + 50,
-      tagX,
-      tagY
-    );
+
+    let bounsCalc = this.bouns.calculate();
+    const bv = bounsCalc
+    for (let i = -5; i < 5; i++) {
+      let bounsValue = bv * i;
+      p.bezier(
+        projectX,
+        projectY,
+        projectX + bounsValue + 50 + i * 10,
+        projectY + bounsValue,
+        tagX + bounsValue - 50 - i * 10,
+        tagY + bounsValue,
+        tagX,
+        tagY
+      );
+    }
   }
 }
 

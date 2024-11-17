@@ -1,13 +1,10 @@
-class AnimationValue {
+class LinearAnimationValue {
   private target: number = -1;
   private current: number;
   step: number;
 
   private min: number = -1;
   private max: number = -1;
-
-  //duration: number;
-  //startTime: number;
 
   constructor(current: number, step: number, min: number, max: number) {
     this.current = current;
@@ -53,4 +50,4 @@ class AnimationValue {
   }
 }
 
-export default AnimationValue;
+export default LinearAnimationValue;

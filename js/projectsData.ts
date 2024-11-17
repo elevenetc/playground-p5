@@ -36,7 +36,7 @@ function tag(title: String): Tag {
 }
 
 const allProjects: Project[] = [
-  new Project("DraggableView", new Date(2015, 1), tags(["android", "java"])),
+  new Project("DraggableView", new Date(2015, 1), tags(["java"])),
   new Project("Interactive canvas", new Date(2016, 1), tags(["android", "java"])),
   new Project("Raytracer", new Date(2016, 4), tags(["android", "java"])),
   new Project("TextSurface", new Date(2016, 6), tags(["android", "kotlin"])),

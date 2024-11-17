@@ -1,6 +1,6 @@
 import Align from "./Align";
 import p5 from "p5";
-import AnimationValue from "./AnimationValue";
+import LinearAnimationValue from "./animation/LinearAnimationValue";
 
 class View {
 
@@ -10,7 +10,7 @@ class View {
 
   parent?: View;
 
-  alpha: AnimationValue = new AnimationValue(255, 30, 0, 255);
+  alpha: LinearAnimationValue = new LinearAnimationValue(255, 30, 0, 255);
 
   hover: boolean = false;
 
