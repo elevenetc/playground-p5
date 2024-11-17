@@ -6,6 +6,7 @@ import Align from "./Align";
 import Free from "./Free";
 import {formatDateToMMYYYY} from "./dateUtils";
 import LinksView from "./LinksView";
+import {tagTitleToColor} from "./appConfig";
 
 const projectsToTags = new Map();
 const tagsToProjects = new Map();
@@ -31,9 +32,12 @@ allProjects.sort((a, b) => b.date.getTime() - a.date.getTime()).forEach(project 
 })
 
 allTags.sort((a, b) => a.title.localeCompare(b.title)).forEach(tag => {
-  let tagView = new TextView(tag.title, tag.id, (id, hovered, p) => {
-    linksView.onTagHover(id, hovered, p)
-  });
+  let tagView = new TextView(
+    tag.title,
+    tag.id,
+    (id, hovered, p) => {linksView.onTagHover(id, hovered, p)},
+    tagTitleToColor(tag.title)
+  );
   tagsView.addChild(tagView);
   tagsToProjects.set(tagView, [])
 })

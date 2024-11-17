@@ -3,9 +3,9 @@ import TextView from "./TextView";
 import View from "./View";
 import Align from "./Align";
 import LinearAnimationValue from "./animation/LinearAnimationValue";
-import {lightenColor, stringToRGB} from "./colorUtils";
 import SinAnimationValue from "./animation/SinAnimationValue";
-import {MouseDirection, MouseSpeed} from "./utils/MouseSpeed";
+import {MouseSpeed} from "./utils/MouseSpeed";
+import {tagTitleToColor} from "./appConfig";
 
 class LinksView extends View {
 
@@ -51,7 +51,7 @@ class LinksView extends View {
     })
   }
 
-  onProjectHover(id: string, hovered: boolean, p:p5) {
+  onProjectHover(id: string, hovered: boolean, p: p5) {
     if (!hovered) return
     if (hovered) {
       if (this.hoveredProject == id) return
@@ -165,7 +165,7 @@ class Link {
   constructor(projectView: TextView, tagView: TextView) {
     this.projectView = projectView
     this.tagView = tagView
-    this.color = lightenColor(stringToRGB(tagView.title))
+    this.color = tagTitleToColor(tagView.title)
   }
 
   setSelected(selected: boolean, p: p5) {
@@ -180,6 +180,8 @@ class Link {
     }
   }
 
+  lines = 10
+
   render(p: p5) {
 
     let projectStartX = this.projectView.getX();
@@ -189,15 +191,22 @@ class Link {
     let tagEndX = this.tagView.getX() + this.tagView.getWidth(p);
     let tagY = this.tagView.getY() + this.tagView.getHeight(p);
 
-    //p.stroke(255, 0, 0, this.alpha.calculate());
-    p.stroke(this.color[0], this.color[1], this.color[2], this.alpha.calculate());
-    p.noFill();
-    this.mouseSpeed.render(p)
 
-    let bounsCalc = this.bouns.calculate();
-    const bv = bounsCalc
-    for (let i = -5; i < 5; i++) {
+    p.noFill();
+
+
+
+
+
+    const bv = this.bouns.calculate();
+    let lineAlpha = this.alpha.calculate();
+
+    for (let i = -this.lines; i < this.lines; i++) {
       let bounsValue = bv * i;
+
+
+      let a = Math.abs((Math.abs(i) / (this.lines)) - 1)
+      p.stroke(this.color[0], this.color[1], this.color[2], lineAlpha * a);
 
       p.line(projectStartX, projectY, projectEndX, projectY)
 

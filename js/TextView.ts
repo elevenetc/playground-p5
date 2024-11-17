@@ -9,9 +9,15 @@ class TextView extends View {
   public title: string;
   public bgAlpha: number = 0;
 
+  private color: [number, number, number];
+
   constructor(title: string)
   constructor(title: string, id: string)
-  constructor(title: string, id: string, hoverHandler: (id: string, hovered: boolean, p: p5) => void)
+  constructor(title: string,
+              id: string,
+              hoverHandler: (id: string, hovered: boolean, p: p5) => void,
+              color: [number, number, number],
+  )
   constructor(...args: any[]) {
     super()
     if (args.length === 1) {
@@ -19,10 +25,16 @@ class TextView extends View {
     } else if (args.length === 2) {
       this.title = args[0];
       this.id = args[1];
-    } else {
+    } else if (args.length === 3) {
       this.title = args[0];
       this.id = args[1];
       this.hoverHandler = args[2];
+      this.color = [255, 255, 255];
+    }else{
+      this.title = args[0];
+      this.id = args[1];
+      this.hoverHandler = args[2];
+      this.color = args[3];
     }
   }
 
@@ -48,7 +60,7 @@ class TextView extends View {
     if (this.hover) this.bgAlpha = p.min(this.bgAlpha + alphaStep, maxAlpha);
     else this.bgAlpha = p.max(this.bgAlpha - alphaStep, 0);
 
-    p.fill(255, this.alpha.calculate());
+    p.fill(this.color[0], this.color[1], this.color[2], this.alpha.calculate());
     p.text(this.title, this.x, this.y + this.getHeight(p));
   }
 
@@ -71,7 +83,6 @@ class TextView extends View {
     this.hover = false;
   }
 }
-
 
 
 export default TextView;
