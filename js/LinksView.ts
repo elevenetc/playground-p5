@@ -172,17 +172,11 @@ class Link {
     if (selected) {
       this.selected = true
       this.alpha.setTarget(255, 50);
-
-
-      let mspeed = this.mouseSpeed.speed / 2500
-      let mDirection = this.mouseSpeed.direction
-
-      this.bouns.setTarget(this.maxBouns * mspeed);
+      this.bouns.setTarget(this.maxBouns);
 
     } else {
       this.selected = false
       this.alpha.setTarget(this.minAlpha, 5);
-      //this.bouns.setTarget(0);
     }
   }
 
@@ -199,16 +193,6 @@ class Link {
     p.stroke(this.color[0], this.color[1], this.color[2], this.alpha.calculate());
     p.noFill();
     this.mouseSpeed.render(p)
-    let mspeed = this.mouseSpeed.speed / 1000
-    let mDirection = this.mouseSpeed.direction
-
-    let verDir = 0
-
-    if(mDirection == MouseDirection.UP) {
-      verDir = -5
-    }else{
-      verDir = 5
-    }
 
     let bounsCalc = this.bouns.calculate();
     const bv = bounsCalc
@@ -221,9 +205,9 @@ class Link {
         projectEndX,
         projectY,
         projectEndX + bounsValue + 150 + i * 10,
-        projectY + bounsValue * verDir,
+        projectY + bounsValue,
         tagStartX + bounsValue - 150 - i * 10,
-        tagY + bounsValue * verDir,
+        tagY + bounsValue,
         tagStartX,
         tagY
       );

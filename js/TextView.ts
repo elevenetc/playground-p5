@@ -38,11 +38,12 @@ class TextView extends View {
 
   public render(p: p5) {
 
-    if (this.bgAlpha > 0) {
-      p.noStroke()
-      p.fill(200, this.bgAlpha)
-      p.rect(this.x, this.y, this.getWidth(p), this.getHeight(p))
-    }
+    //debug
+    // if (this.bgAlpha > 0) {
+    //   p.noStroke()
+    //   p.fill(200, this.bgAlpha)
+    //   p.rect(this.x, this.y, this.getWidth(p), this.getHeight(p))
+    // }
 
     if (this.hover) this.bgAlpha = p.min(this.bgAlpha + alphaStep, maxAlpha);
     else this.bgAlpha = p.max(this.bgAlpha - alphaStep, 0);
