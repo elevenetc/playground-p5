@@ -1,7 +1,7 @@
 import View from "./View";
 import Align from "./Align";
 import p5 from "p5";
-import {handleChildrenHover} from "./viewUtils";
+import {handleChildrenHover} from "./utils/viewUtils";
 
 class Free extends View {
   parent?: View;

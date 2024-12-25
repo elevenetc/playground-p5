@@ -1,10 +1,10 @@
 import p5 from "p5";
-import TextView from "./TextView";
-import View from "./View";
-import Align from "./Align";
-import LinearAnimationValue from "./animation/LinearAnimationValue";
-import SinAnimationValue from "./animation/SinAnimationValue";
-import {MouseSpeed} from "./utils/MouseSpeed";
+import TextView from "./p5000/TextView";
+import View from "./p5000/View";
+import Align from "./p5000/Align";
+import LinearAnimationValue from "./p5000/animation/LinearAnimationValue";
+import SinAnimationValue from "./p5000/animation/SinAnimationValue";
+import {MouseSpeed} from "./p5000/utils/MouseSpeed";
 import {tagTitleToColor} from "./appConfig";
 
 class LinksView extends View {

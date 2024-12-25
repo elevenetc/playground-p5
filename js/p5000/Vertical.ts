@@ -1,7 +1,7 @@
 import p5 from 'p5';
 import View from "./View";
 import Align from "./Align"
-import {handleChildrenHover} from "./viewUtils";
+import {handleChildrenHover} from "./utils/viewUtils";
 
 class Vertical extends View {
 

@@ -1,5 +1,5 @@
 import p5 from "p5";
-import View from "./View";
+import View from "../View";
 
 function handleChildrenHover(children: View[], mouseX: number, mouseY: number, p: p5): boolean {
   let result = false;

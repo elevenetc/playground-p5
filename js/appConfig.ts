@@ -1,4 +1,4 @@
-import {lightenColor, stringToRGB} from "./colorUtils";
+import {lightenColor, stringToRGB} from "./p5000/colorUtils";
 
 function tagTitleToColor(title: string): [number, number, number] {
   return lightenColor(stringToRGB(title))

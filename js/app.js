@@ -1,9 +1,9 @@
 import p5 from 'p5';
-import TextView from './TextView.ts';
+import TextView from './p5000/TextView.ts';
 import {allProjects, allTags} from "./projectsData";
-import Vertical from "./Vertical";
-import Align from "./Align";
-import Free from "./Free";
+import Vertical from "./p5000/Vertical";
+import Align from "./p5000/Align";
+import Free from "./p5000/Free";
 import {formatDateToMMYYYY} from "./dateUtils";
 import LinksView from "./LinksView";
 import {tagTitleToColor} from "./appConfig";
